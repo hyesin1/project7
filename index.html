@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>반짝반짝 깨끗한 화장실 만들기 🧼✨</title>
+  <style>
+    :root {
+      --primary-color: #00A896;
+      --bg-color: #E8F5E9;
+      --card-bg: #FFFFFF;
+      --text-color: #2D3748;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: #4A5568;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .board-header-action {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #E2E8F0;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+
+    .scroll-btn {
+      background-color: #E6FFFA;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .scroll-btn:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    /* OX 퀴즈 스타일 */
+    .quiz-progress {
+      font-size: 0.9rem;
+      color: var(--primary-color);
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .quiz-question {
+      font-size: 1.05rem;
+      font-weight: 500;
+      line-height: 1.5;
+      min-height: 50px;
+    }
+
+    .quiz-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .quiz-btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-o { background-color: #E6FFFA; color: #00796B; }
+    .btn-x { background-color: #FFEBEE; color: #D32F2F; }
+    .quiz-btn:hover { opacity: 0.85; }
+    .quiz-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    #quiz-explanation {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      background-color: #F7FAFC;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .next-btn {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+    }
+
+    /* 틀린그림찾기 스타일 */
+    .spot-info {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+      font-size: 0.95rem;
+    }
+
+    .canvas-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+    }
+
+    canvas {
+      border: 3px solid #00A896;
+      border-radius: 12px;
+      cursor: pointer;
+      max-width: 100%;
+      background: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* 실천 미션 카드 스타일 */
+    .mission-box {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .mission-result {
+      background-color: #E6FFFA;
+      border: 2px dashed #00A896;
+      border-radius: 12px;
+      padding: 18px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: #004D40;
+      margin-bottom: 12px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .mission-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* 설문조사 투표 스타일 */
+    .poll-option {
+      margin-bottom: 12px;
+    }
+
+    .poll-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      background-color: #F7FAFC;
+      border: 1px solid #CBD5E0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .poll-btn:hover {
+      background-color: #E6FFFA;
+      border-color: #00A896;
+    }
+
+    .poll-bar-bg {
+      background-color: #EDF2F7;
+      border-radius: 10px;
+      height: 12px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .poll-bar-fill {
+      background-color: var(--primary-color);
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease-in-out;
+    }
+
+    .revote-btn {
+      margin-top: 10px;
+      background-color: #EDF2F7;
+      color: #4A5568;
+      border: 1px solid #CBD5E0;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .revote-btn:hover {
+      background-color: #CBD5E0;
+    }
+
+    /* 게시판 스타일 */
+    .post-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .post-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #EDF2F7;
+    }
+
+    .post-item:last-child {
+      border-bottom: none;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #718096;
+      margin-bottom: 4px;
+    }
+
+    .post-author {
+      font-weight: bold;
+      color: #2D3748;
+    }
+
+    .post-category {
+      background-color: #E6FFFA;
+      color: #00796B;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-left: 6px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 15px;
+      border-top: 2px dashed #E2E8F0;
+    }
+
+    select, input, textarea {
+      padding: 10px;
+      border: 1px solid #CBD5E0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    button.submit-btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>반짝반짝 깨끗한 화장실 만들기 🧼✨</h1>
+    <p>올바른 사용 예절을 배우고 나만의 화장실 이용 다짐을 공유해 보세요!</p>
+  </header>
+
+  <!-- 1. OX 퀴즈 섹션 -->
+  <div class="card">
+    <div class="board-header-action">
+      <h2>🧠 깨끗한 화장실 에티켓 OX 퀴즈</h2>
+    </div>
+    <div id="quiz-box">
+      <div id="quiz-progress" class="quiz-progress">문제 1 / 10</div>
+      <div id="quiz-question" class="quiz-question">문제를 불러오는 중입니다...</div>
+      
+      <div class="quiz-buttons">
+        <button id="btn-o" class="quiz-btn btn-o">⭕</button>
+        <button id="btn-x" class="quiz-btn btn-x">❌</button>
+      </div>
+      
+      <div id="quiz-explanation"></div>
+      <button id="next-btn" class="next-btn">다음 문제 ➔</button>
+    </div>
+  </div>
+
+  <!-- 2. 틀린그림찾기 섹션 -->
+  <div class="card">
+    <div class="board-header-action">
+      <h2>🔍 화장실 에티켓 틀린그림찾기</h2>
+    </div>
+    <div class="spot-info">
+      <span id="stage-title">STAGE 1 / 5</span>
+      <span id="lives-count">기회: ❤️❤️❤️</span>
+      <span id="found-count">찾은 개수: 0 / 7</span>
+    </div>
+    <p style="font-size:0.85rem; color:#666; margin-top:-5px; margin-bottom:12px;">그림에서 서로 다른 7곳의 잘못된 예절을 클릭해 보세요! (틀리면 기회가 깎입니다)</p>
+
+    <div class="canvas-container">
+      <div>
+        <div style="font-size:0.85rem; font-weight:bold; color:#00796B; text-align:center; margin-bottom:4px;">[ 올바른 예절 그림 🌿 ]</div>
+        <canvas id="canvas-left" width="280" height="200"></canvas>
+      </div>
+      <div>
+        <div style="font-size:0.85rem; font-weight:bold; color:#D32F2F; text-align:center; margin-bottom:4px;">[ 틀린 부분 찾아보기 🔍 ]</div>
+        <canvas id="canvas-right" width="280" height="200"></canvas>
+      </div>
+    </div>
+    <div id="spot-message" style="text-align:center; margin-top:12px; font-weight:bold; font-size:1.05rem;"></div>
+    <button id="spot-retry-btn" class="next-btn" style="display:none; margin-top:10px; background-color:#E53935;">다시 시도하기 🔄</button>
+    <button id="spot-next-btn" class="next-btn" style="display:none; margin-top:10px;">다음 그림 도전 ➔</button>
+  </div>
+
+  <!-- 3. 오늘의 실천 미션 -->
+  <div class="card">
+    <div class="board-header-action">
+      <h2>🎲 오늘의 화장실 1초 실천 미션</h2>
+    </div>
+    <div class="mission-box">
+      <div id="mission-result" class="mission-result"></div>
+      <button class="mission-btn" onclick="drawMission()">🎯 오늘 실천할 미션 뽑기 (클릭!)</button>
+    </div>
+  </div>
+
+  <!-- 4. 에티켓 미니 설문조사 -->
+  <div class="card">
+    <div class="board-header-action">
+      <h2>📊 우리 학교 화장실 에티켓 미니 투표</h2>
+    </div>
+    <p style="font-size:0.85rem; color:#666; margin-top:-5px; margin-bottom:12px;">우리 학교 화장실에서 가장 먼저 개선되어야 할 행동은 무엇일까요?</p>
+    <div id="poll-container">
+      <!-- 설문 문항 및 투표 결과 표시 영역 -->
+    </div>
+  </div>
+
+  <!-- 5. 공유 게시판 -->
+  <div class="card">
+    <div class="board-header-action">
+      <h2>✍️ 나의 다짐 & 우리만의 화장실 규칙</h2>
+      <button class="scroll-btn" onclick="scrollToInput()">✏️ 작성하기</button>
+    </div>
+    
+    <ul id="post-list" class="post-list">
+      <!-- 작성된 글들이 동적으로 추가됩니다 -->
+    </ul>
+
+    <div class="input-group" id="write-area">
+      <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #4A5568;">💬 깨끗한 화장실 만들기에 동참하기</h3>
+      <select id="category">
+        <option value="💡 나의 다짐">💡 나의 실천 다짐 적기</option>
+        <option value="📜 우리가 만드는 규칙">📜 내가 제안하는 화장실 규칙</option>
+      </select>
+      <input type="text" id="nickname" placeholder="닉네임 (예: 깨끗이쓰는3학년)" maxlength="10">
+      <textarea id="message" rows="3" placeholder="예) 세면대 사용 후 튄 물방울은 다음 사람을 위해 깔끔하게 닦고 갈게요!"></textarea>
+      <button class="submit-btn" onclick="addPost()">소중한 다짐 등록하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- 1. OX 퀴즈 은행 ---
+  const allQuizBank = [
+    { q: "Q. 세면대에서 손을 씻은 후 물이 많이 튀었다면 휴지나 티슈로 살짝 닦아주고 떠나는 것이 매너이다?", a: "O", exp: "🎉 정답입니다! 물이 튄 세면대를 다음 사람이 사용할 때 옷이 젖지 않도록 배려하는 좋은 습관입니다." },
+    { q: "Q. 손을 씻고 손에 남은 물기는 세면대 바깥 바닥으로 털어내는 것이 바람직하다?", a: "X", exp: "💡 틀렸습니다! 바닥에 물이 떨어지면 미끄럼 사고가 발생할 수 있으니 세면대 안쪽에서 터는 것이 좋습니다." },
+    { q: "Q. 화장실 휴지통이 가득 차있다면 옆 바닥에 휴지를 쌓아두고 가는 것이 좋다?", a: "X", exp: "💡 틀렸습니다! 가득 찬 휴지통 바닥에 버리지 말고 지정된 여분의 쓰레기통을 이용하거나 깔끔하게 처리해야 합니다." },
+    { q: "Q. 세면대에 머리카락이나 침이 남지 않도록 사용 후 물을 틀어 깔끔하게 씻어 내려보내야 한다?", a: "O", exp: "🎉 정답입니다! 자신이 사용한 세면대를 깔끔하게 정리하는 것은 기본적인 청결 에티켓입니다." },
+    { q: "Q. 물티슈는 물에 잘 녹으므로 변기에 그대로 버려도 문제없다?", a: "X", exp: "💡 틀렸습니다! 물티슈는 물에 녹지 않아 변기와 배수관을 크게 막히게 만듭니다. 휴지통에 버려야 합니다." },
+    { q: "Q. 변기 물을 내릴 때는 다음 사람과 위생을 위해 변기 덮개를 닫고 내리는 것이 좋다?", a: "O", exp: "🎉 정답입니다! 덮개를 닫고 물을 내리면 세균이 공기 중으로 튀는 것을 막아줍니다." },
+    { q: "Q. 세면대에 사용하고 남은 껌이나 가글한 이물질을 뱉어두고 그냥 나가도 된다?", a: "X", exp: "💡 틀렸습니다! 세면대 배수구가 막힐 수 있으므로 껌이나 쓰레기는 휴지통에 버려야 합니다." },
+    { q: "Q. 사용한 화장지는 변기에 버려도 되는 수용성 화장지인지 확인 후 올바르게 버려야 한다?", a: "O", exp: "🎉 정답입니다! 수용성 화장지는 변기에, 녹지 않는 쓰레기는 휴지통에 구분하여 처리합니다." },
+    { q: "Q. 화장실은 소리가 잘 울리므로 친구들과 큰 소리로 소리 지르거나 장난치지 않는 것이 좋다?", a: "O", exp: "🎉 정답입니다! 화장실은 모두가 편안하게 이용해야 하는 공공장소이므로 정숙해야 합니다." },
+    { q: "Q. 사람이 많이 기다릴 때 화장실 칸 안에서 스마트폰을 보며 오래 앉아있는 것은 매너 있는 행동이다?", a: "X", exp: "💡 틀렸습니다! 기다리는 다른 학생들을 배려해 볼일이 끝나면 바로 자리를 비워줘야 합니다." },
+    { q: "Q. 세면대가 부족할 때는 손만 빨리 씻고 옆으로 비켜서 다른 사람이 사용할 수 있게 배려한다?", a: "O", exp: "🎉 정답입니다! 좁은 공용 공간에서는 서로 조금씩 양보하는 태도가 필요합니다." },
+    { q: "Q. 화장실 칸 안에 사람이 있는지 확인할 때는 문을 발로 쾅 차서 확인한다?", a: "X", exp: "💡 틀렸습니다! 강하게 문을 차면 안 쪽 사람에게 위협이 됩니다. 가볍게 노크해야 합니다." },
+    { q: "Q. 화장실 내부 바닥에서 물장난을 치는 것은 바닥을 미끄럽게 만들어 위험하므로 하지 말아야 한다?", a: "O", exp: "🎉 정답입니다! 물장난으로 인한 물기는 넘어져 다치는 큰 안전사고를 유발합니다." },
+    { q: "Q. 화장실 문이 닫혀있다면 밖에서 문고리를 세게 마구 흔들어 빠르게 나오게 해야 한다?", a: "X", exp: "💡 틀렸습니다! 억지로 문고리를 흔들지 말고, 안쪽 사람이 편안히 볼일을 볼 수 있도록 차분히 기다립니다." },
+    { q: "Q. 화장실 줄이 길 때는 먼저 온 사람 순서대로 차례차례 한 줄 서기를 한다?", a: "O", exp: "🎉 정답입니다! 질서 있게 한 줄 서기를 실천하는 것이 모두에게 공평하고 빠릅니다." },
+    { q: "Q. 공용 비누나 핸드워시 세정제를 심심하다고 장난으로 마구 짜서 남용해도 된다?", a: "X", exp: "💡 틀렸습니다! 공용 물품을 남용하면 다음 친구가 필요할 때 사용하지 못하게 됩니다." },
+    { q: "Q. 화장실 칸막이 문이나 잠금장치를 쾅 닫거나 부서질 정도로 강하게 다뤄도 상관없다?", a: "X", exp: "💡 틀렸습니다! 모두가 함께 쓰는 공공 시설물은 고장 나지 않도록 소중히 다뤄야 합니다." },
+    { q: "Q. 화장실 벽면이나 문 안쪽에 낙서를 남기는 것은 자유로운 표현이므로 권장된다?", a: "X", exp: "💡 틀렸습니다! 벽이나 문에 낙서를 하는 것은 시설물을 더럽히고 훼손하는 행동입니다." },
+    { q: "Q. 손을 닦을 때 쓰는 페이퍼 타월은 한 번에 5~6장씩 뭉텅이로 뽑아 쓰는 것이 좋다?", a: "X", exp: "💡 틀렸습니다! 필요한 만큼(1~2장)만 아껴 사용하는 것이 자원 절약과 환경 보호에 도움 됩니다." },
+    { q: "Q. 손을 씻은 후에는 수도꼭지에서 물이 새지 않도록 잘 잠갔는지 확인해야 한다?", a: "O", exp: "🎉 정답입니다! 수도꼭지를 제대로 잠그지 않으면 소중한 물이 크게 낭비됩니다." },
+    { q: "Q. 변기 커버 위에 신발을 신고 올라가 발을 얹은 채 사용하는 것은 잘못된 이용 방법이다?", a: "O", exp: "🎉 정답입니다! 변기 커버가 파손되거나 흙먼지가 묻어 다음 사람이 크게 불편해집니다." },
+    { q: "Q. 양치질을 할 때 물을 계속 틀어놓는 것보다 양치컵을 사용하는 것이 물 절약에 도움이 된다?", a: "O", exp: "🎉 정답입니다! 양치컵을 사용하면 쓸데없이 버려지는 물을 크게 줄일 수 있습니다." },
+    { q: "Q. 고장 난 수도꼭지나 막힌 변기를 발견하더라도 그냥 모른 척 지나치는 것이 좋다?", a: "X", exp: "💡 틀렸습니다! 고장 난 시설물은 빠르게 선생님이나 관리실에 알려야 다른 학생들의 불편을 막을 수 있습니다." },
+    { q: "Q. 화장실 내 거울이나 핸드드라이어 같은 기구는 내 물건처럼 소중히 다뤄야 한다?", a: "O", exp: "🎉 정답입니다! 함께 사용하는 모든 기구와 장비를 아껴 쓸 때 모두가 쾌적하게 이용할 수 있습니다." },
+    { q: "Q. '나 하나쯤이야'라는 생각보다 '내가 먼저 깨끗이' 사용하려는 마음가짐이 중요하다?", a: "O", exp: "🎉 정답입니다! 배려하는 마음과 솔선수범이 깨끗한 화장실 문화를 만듭니다." }
+  ];
+
+  let selectedQuizzes = [];
+  let currentQuizIndex = 0;
+  let score = 0;
+
+  // --- 2. 틀린그림찾기 5단계 정밀 좌표 ---
+  const spotStages = [
+    {
+      title: "STAGE 1: 세면대 물 튐 & 쓰레기 정리 🧼",
+      diffs: [
+        {x: 140, y: 35, r: 25},
+        {x: 60, y: 170, r: 25},
+        {x: 95, y: 175, r: 22},
+        {x: 105, y: 110, r: 22},
+        {x: 140, y: 125, r: 22},
+        {x: 140, y: 85, r: 22},
+        {x: 230, y: 175, r: 25}
+      ]
+    },
+    {
+      title: "STAGE 2: 변기 사용 & 휴지통 에티켓 🧻",
+      diffs: [
+        {x: 140, y: 90, r: 25},
+        {x: 140, y: 120, r: 22},
+        {x: 180, y: 155, r: 25},
+        {x: 60, y: 125, r: 25},
+        {x: 210, y: 145, r: 25},
+        {x: 235, y: 140, r: 25},
+        {x: 140, y: 55, r: 22}
+      ]
+    },
+    {
+      title: "STAGE 3: 소음 금지 & 노크 & 낙서 금지 🚪",
+      diffs: [
+        {x: 140, y: 65, r: 28},
+        {x: 140, y: 140, r: 25},
+        {x: 140, y: 25, r: 22},
+        {x: 85, y: 110, r: 22},
+        {x: 210, y: 50, r: 25},
+        {x: 140, y: 185, r: 22},
+        {x: 35, y: 90, r: 25}
+      ]
+    },
+    {
+      title: "STAGE 4: 수도꼭지 잠그기 & 물 절약 💧",
+      diffs: [
+        {x: 140, y: 95, r: 22},
+        {x: 140, y: 120, r: 25},
+        {x: 205, y: 120, r: 25},
+        {x: 170, y: 110, r: 22},
+        {x: 140, y: 70, r: 22},
+        {x: 140, y: 165, r: 25},
+        {x: 110, y: 125, r: 22}
+      ]
+    },
+    {
+      title: "STAGE 5: 시설물 아끼기 & 기구 보호 🚫",
+      diffs: [
+        {x: 100, y: 35, r: 25},
+        {x: 55, y: 115, r: 25},
+        {x: 225, y: 90, r: 25},
+        {x: 180, y: 120, r: 22},
+        {x: 105, y: 75, r: 22},
+        {x: 140, y: 175, r: 25},
+        {x: 30, y: 120, r: 25}
+      ]
+    }
+  ];
+
+  let currentSpotStage = 0;
+  let foundDiffs = [];
+  let lives = 3;
+  let isGameOver = false;
+
+  // --- 3. 실천 미션 무작위 리스트 ---
+  const missionList = [
+    "💧 손을 씻고 나면 세면대에 튄 물방울 휴지로 쓱 한번 닦기!",
+    "🚪 화장실 들어갈 땐 안쪽 사람을 배려해 가볍게 '똑똑' 노크하기!",
+    "🧻 손 닦는 페이퍼타월은 꼭 필요한 1~2장만 아껴 쓰기!",
+    "🧼 손 씻을 땐 수도꼭지를 잠그고 비누 거품 충분히 내기!",
+    "🔇 화장실 안에서는 친구와 큰 소리로 장난치지 않고 정숙하기!",
+    "🚮 휴지통에 휴지가 차있으면 꼭 쓰레기통 안쪽으로 깊숙이 넣기!",
+    "🚽 변기 물을 내릴 때는 세균 방지를 위해 덮개를 닫고 내리기!"
+  ];
+
+  // --- 4. 에티켓 미니 설문 옵션 ---
+  const pollOptions = [
+    "💧 세면대 물 튀김 및 주변 청결 관리",
+    "🧻 변기 휴지통 관리 및 물티슈 버리지 않기",
+    "🤫 화장실 내부 소음 및 장난 줄이기",
+    "🚪 문 쾅 닫지 않고 노크하는 문화 만들기"
+  ];
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('btn-o').onclick = function() { checkAnswer('O'); };
+    document.getElementById('btn-x').onclick = function() { checkAnswer('X'); };
+    document.getElementById('next-btn').onclick = function() { nextQuestion(); };
+    document.getElementById('spot-next-btn').onclick = function() { nextSpotStage(); };
+    document.getElementById('spot-retry-btn').onclick = function() { initSpotGame(); };
+
+    initQuiz();
+    initSpotGame();
+    renderPoll();
+    loadPosts();
+
+    document.getElementById('canvas-left').addEventListener('click', handleCanvasClick);
+    document.getElementById('canvas-right').addEventListener('click', handleCanvasClick);
+  });
+
+  // --- OX 퀴즈 제어 ---
+  function getRandomQuizzes() {
+    const shuffled = [...allQuizBank].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 10);
+  }
+
+  function initQuiz() {
+    selectedQuizzes = getRandomQuizzes();
+    currentQuizIndex = 0;
+    score = 0;
+    renderQuiz();
+  }
+
+  function renderQuiz() {
+    const q = selectedQuizzes[currentQuizIndex];
+    document.getElementById('quiz-progress').innerText = `문제 ${currentQuizIndex + 1} / ${selectedQuizzes.length}`;
+    document.getElementById('quiz-question').innerText = q.q;
+    
+    document.getElementById('quiz-explanation').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('btn-o').disabled = false;
+    document.getElementById('btn-x').disabled = false;
+  }
+
+  function checkAnswer(userChoice) {
+    const q = selectedQuizzes[currentQuizIndex];
+    const expBox = document.getElementById('quiz-explanation');
+    
+    document.getElementById('btn-o').disabled = true;
+    document.getElementById('btn-x').disabled = true;
+
+    if (userChoice === q.a) {
+      score++;
+      expBox.style.color = "#00796B";
+      expBox.innerHTML = `<strong>⭕ 정답입니다!</strong><br>${q.exp}`;
+    } else {
+      expBox.style.color = "#C62828";
+      expBox.innerHTML = `<strong>❌ 오답입니다! (정답: ${q.a})</strong><br>${q.exp}`;
+    }
+
+    expBox.style.display = 'block';
+    
+    const nextBtn = document.getElementById('next-btn');
+    if (currentQuizIndex === selectedQuizzes.length - 1) {
+      nextBtn.innerText = "최종 결과 보기 🏆";
+    } else {
+      nextBtn.innerText = "다음 문제 ➔";
+    }
+    nextBtn.style.display = 'block';
+  }
+
+  function nextQuestion() {
+    currentQuizIndex++;
+    if (currentQuizIndex < selectedQuizzes.length) {
+      renderQuiz();
+    } else {
+      showFinalResult();
+    }
+  }
+
+  function showFinalResult() {
+    const quizBox = document.getElementById('quiz-box');
+    quizBox.innerHTML = `
+      <div style="text-align: center; padding: 20px 0;">
+        <h3 style="font-size: 1.4rem; color: var(--primary-color); margin-bottom: 10px;">🎉 퀴즈 완료!</h3>
+        <p style="font-size: 1.1rem; font-weight: bold;">10문제 중 <span style="color: #00796B;">${score}문제</span>를 맞히셨습니다!</p>
+        <p style="color: #4A5568; line-height: 1.6; margin-top: 15px; background: #E6FFFA; padding: 15px; border-radius: 8px;">
+          <strong>🧼 깨끗한 화장실 약속!</strong><br>
+          "아름다운 사람은 떠난 자리도 아름답습니다.<br>나부터 실천하는 배려로 더욱 쾌적한 화장실을 만들어 가요! 🌿"
+        </p>
+        <button onclick="location.reload()" class="next-btn" style="display:inline-block; width: auto; padding: 10px 20px; margin-top: 15px;">새로운 문제 풀어보기 🔄</button>
+      </div>
+    `;
+  }
+
+  // --- 틀린그림찾기 제어 ---
+  function initSpotGame() {
+    foundDiffs = [];
+    lives = 3;
+    isGameOver = false;
+
+    document.getElementById('spot-next-btn').style.display = 'none';
+    document.getElementById('spot-retry-btn').style.display = 'none';
+    document.getElementById('spot-message').innerText = '';
+    
+    renderSpotStage();
+  }
+
+  function renderSpotStage() {
+    const stage = spotStages[currentSpotStage];
+    document.getElementById('stage-title').innerText = `${stage.title}`;
+    document.getElementById('found-count').innerText = `찾은 개수: ${foundDiffs.length} / ${stage.diffs.length}`;
+    
+    let heartStr = "기회: ";
+    for (let i = 0; i < 3; i++) {
+      heartStr += (i < lives) ? "❤️" : "🖤";
+    }
+    document.getElementById('lives-count').innerText = heartStr;
+
+    const cLeft = document.getElementById('canvas-left');
+    const cRight = document.getElementById('canvas-right');
+    const ctxL = cLeft.getContext('2d');
+    const ctxR = cRight.getContext('2d');
+
+    drawStageScene(ctxL, currentSpotStage, false);
+    drawStageScene(ctxR, currentSpotStage, true);
+
+    foundDiffs.forEach(idx => {
+      const d = stage.diffs[idx];
+      drawRedCircle(ctxL, d.x, d.y, d.r);
+      drawRedCircle(ctxR, d.x, d.y, d.r);
+    });
+  }
+
+  function drawStageScene(ctx, stageIdx, isRight) {
+    ctx.clearRect(0, 0, 280, 200);
+
+    ctx.fillStyle = '#E0F2F1'; ctx.fillRect(0, 0, 280, 140);
+    ctx.fillStyle = '#B2DFDB'; ctx.fillRect(0, 140, 280, 60);
+    ctx.strokeStyle = '#26A69A'; ctx.lineWidth = 1;
+    for(let i=0; i<280; i+=40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 140); ctx.stroke(); }
+    for(let j=0; j<140; j+=35) { ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(280, j); ctx.stroke(); }
+
+    if (stageIdx === 0) {
+      ctx.fillStyle = '#E0F7FA'; ctx.fillRect(80, 10, 120, 50);
+      ctx.strokeStyle = '#80DEEA'; ctx.lineWidth = 3; ctx.strokeRect(80, 10, 120, 50);
+      
+      ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#90A4AE'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(140, 120, 55, 22, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#CFD8DC'; ctx.fillRect(135, 142, 10, 30);
+      
+      ctx.fillStyle = '#78909C'; ctx.fillRect(135, 75, 10, 25);
+      ctx.fillStyle = '#E0E0E0'; ctx.fillRect(95, 105, 20, 8);
+      ctx.fillStyle = '#B0BEC5'; ctx.fillRect(220, 140, 25, 40);
+
+      if (isRight) {
+        ctx.fillStyle = '#29B6F6';
+        ctx.beginPath(); ctx.arc(135, 30, 4, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(145, 40, 3, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#4FC3F7';
+        ctx.beginPath(); ctx.ellipse(60, 170, 18, 8, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#ECEFF1'; ctx.fillRect(95, 175, 12, 10);
+        ctx.fillStyle = '#FF80AB'; ctx.fillRect(100, 108, 12, 6);
+        ctx.strokeStyle = '#37474F'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(140, 125, 6, 0, Math.PI); ctx.stroke();
+        ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(140, 85, 6, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#FFF176'; ctx.fillRect(228, 172, 8, 8);
+      } else {
+        ctx.fillStyle = '#FF80AB'; ctx.fillRect(97, 103, 16, 6);
+      }
+    } else if (stageIdx === 1) {
+      ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#B0BEC5'; ctx.lineWidth = 2;
+      ctx.fillRect(115, 40, 50, 40);
+      ctx.beginPath(); ctx.ellipse(140, 120, 35, 45, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#CFD8DC'; ctx.fillRect(135, 50, 10, 8);
+      
+      ctx.fillStyle = '#A1887F'; ctx.fillRect(50, 90, 25, 20);
+      ctx.fillStyle = '#90A4AE'; ctx.fillRect(220, 140, 30, 45);
+
+      if (isRight) {
+        ctx.fillStyle = '#B0BEC5'; ctx.beginPath(); ctx.ellipse(140, 110, 20, 25, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#5D4037'; ctx.fillRect(133, 115, 14, 8);
+        ctx.fillStyle = '#81D4FA'; ctx.beginPath(); ctx.ellipse(180, 155, 15, 6, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(55, 105, 10, 45);
+        ctx.fillStyle = '#E0F7FA'; ctx.fillRect(205, 140, 16, 14);
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(225, 128, 20, 15);
+        ctx.fillStyle = '#795548'; ctx.fillRect(137, 52, 6, 6);
+      } else {
+        ctx.fillStyle = '#E0E0E0'; ctx.beginPath(); ctx.ellipse(140, 115, 30, 40, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(55, 105, 10, 12);
+      }
+    } else if (stageIdx === 2) {
+      ctx.fillStyle = '#D7CCC8'; ctx.strokeStyle = '#8D6E63'; ctx.lineWidth = 3;
+      ctx.fillRect(70, 10, 140, 180);
+      ctx.fillStyle = '#5D4037'; ctx.beginPath(); ctx.arc(85, 110, 6, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#81C784'; ctx.fillRect(125, 20, 30, 12);
+
+      if (isRight) {
+        ctx.strokeStyle = '#E91E63'; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(90, 60); ctx.lineTo(190, 75); ctx.stroke();
+        ctx.fillStyle = '#3E2723'; ctx.fillRect(132, 135, 16, 10);
+        ctx.fillStyle = '#E53935'; ctx.fillRect(130, 20, 20, 10);
+        ctx.fillStyle = '#263238'; ctx.fillRect(80, 106, 12, 8);
+        ctx.strokeStyle = '#FF9800'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(205, 45); ctx.lineTo(220, 55); ctx.stroke();
+        ctx.fillStyle = '#FFF59D'; ctx.fillRect(135, 182, 12, 6);
+        ctx.strokeStyle = '#7B1FA2'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(25, 80); ctx.lineTo(45, 100); ctx.stroke();
+      }
+    } else if (stageIdx === 3) {
+      ctx.fillStyle = '#FFFFFF'; ctx.strokeStyle = '#B0BEC5'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(140, 120, 55, 22, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#78909C'; ctx.fillRect(135, 65, 10, 25);
+      
+      if (isRight) {
+        ctx.fillStyle = '#29B6F6'; ctx.fillRect(138, 90, 4, 30);
+        ctx.fillStyle = '#81D4FA'; ctx.beginPath(); ctx.ellipse(140, 118, 50, 18, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#FF7043'; ctx.fillRect(195, 122, 18, 8);
+        ctx.fillStyle = '#E0F2F1'; ctx.beginPath(); ctx.arc(170, 110, 6, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#D32F2F'; ctx.fillRect(132, 65, 16, 6);
+        ctx.fillStyle = '#0288D1'; ctx.beginPath(); ctx.arc(140, 165, 5, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#5D4037'; ctx.beginPath(); ctx.arc(110, 125, 5, 0, Math.PI*2); ctx.fill();
+      } else {
+        ctx.fillStyle = '#FF7043'; ctx.fillRect(200, 108, 12, 18);
+      }
+    } else if (stageIdx === 4) {
+      ctx.fillStyle = '#E0F7FA'; ctx.fillRect(80, 10, 120, 50); ctx.strokeRect(80, 10, 120, 50);
+      ctx.fillStyle = '#B0BEC5'; ctx.fillRect(45, 80, 22, 35);
+      ctx.fillStyle = '#90A4AE'; ctx.fillRect(215, 80, 22, 35);
+
+      if (isRight) {
+        ctx.strokeStyle = '#37474F'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(90, 20); ctx.lineTo(110, 45); ctx.stroke();
+        ctx.fillStyle = '#FFF9C4'; ctx.fillRect(50, 105, 12, 30);
+        ctx.fillStyle = '#FF1744'; ctx.fillRect(220, 85, 12, 10);
+        ctx.strokeStyle = '#424242'; ctx.beginPath(); ctx.moveTo(175, 115); ctx.lineTo(190, 125); ctx.stroke();
+        ctx.fillStyle = '#FFB74D'; ctx.fillRect(100, 70, 12, 16);
+        ctx.fillStyle = '#FFF9C4'; ctx.fillRect(130, 170, 20, 12);
+        ctx.strokeStyle = '#004D40'; ctx.beginPath(); ctx.moveTo(20, 110); ctx.lineTo(35, 130); ctx.stroke();
+      } else {
+        ctx.fillStyle = '#FFB74D'; ctx.fillRect(100, 68, 12, 16);
+      }
+    }
+  }
+
+  function drawRedCircle(ctx, x, y, r) {
+    ctx.save();
+    ctx.strokeStyle = '#D32F2F';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function handleCanvasClick(e) {
+    if (isGameOver) return;
+
+    const rect = e.target.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+
+    const stage = spotStages[currentSpotStage];
+    let isHit = false;
+
+    stage.diffs.forEach((d, idx) => {
+      if (!foundDiffs.includes(idx)) {
+        const dist = Math.hypot(clickX - d.x, clickY - d.y);
+        if (dist <= d.r) {
+          foundDiffs.push(idx);
+          isHit = true;
+        }
+      }
+    });
+
+    if (isHit) {
+      renderSpotStage();
+
+      if (foundDiffs.length === stage.diffs.length) {
+        document.getElementById('spot-message').style.color = '#00796B';
+        document.getElementById('spot-message').innerText = '🎉 축하합니다! 7개 차이점을 모두 찾으셨습니다!';
+        document.getElementById('spot-next-btn').style.display = 'block';
+      }
+    } else {
+      lives--;
+      renderSpotStage();
+
+      if (lives <= 0) {
+        isGameOver = true;
+        document.getElementById('spot-message').style.color = '#D32F2F';
+        document.getElementById('spot-message').innerText = '💥 기회를 모두 잃어 실패했습니다!';
+        document.getElementById('spot-retry-btn').style.display = 'block';
+      }
+    }
+  }
+
+  function nextSpotStage() {
+    currentSpotStage = (currentSpotStage + 1) % spotStages.length;
+    initSpotGame();
+  }
+
+  // --- 실천 미션 로직 ---
+  function drawMission() {
+    const randomIndex = Math.floor(Math.random() * missionList.length);
+    const resultBox = document.getElementById('mission-result');
+    resultBox.innerText = missionList[randomIndex];
+    resultBox.style.display = 'block';
+  }
+
+  // --- 미니 설문조사 로직 (표 차감 없는 누적 방식) ---
+  function renderPoll() {
+    const container = document.getElementById('poll-container');
+    let pollData = JSON.parse(localStorage.getItem('toiletPoll_v2')) || [0, 0, 0, 0];
+    let userVotedIdx = localStorage.getItem('toiletPollVotedIdx');
+    let hasVoted = userVotedIdx !== null;
+    let totalVotes = pollData.reduce((a, b) => a + b, 0);
+
+    container.innerHTML = '';
+
+    pollOptions.forEach((optionText, idx) => {
+      const votes = pollData[idx];
+      const percent = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+
+      const optDiv = document.createElement('div');
+      optDiv.className = 'poll-option';
+
+      if (!hasVoted) {
+        optDiv.innerHTML = `
+          <button class="poll-btn" onclick="submitVote(${idx})">${optionText}</button>
+        `;
+      } else {
+        const isMyChoice = parseInt(userVotedIdx) === idx;
+        optDiv.innerHTML = `
+          <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:bold;">
+            <span style="${isMyChoice ? 'color:#00796B;' : ''}">${optionText} ${isMyChoice ? '✅' : ''}</span>
+            <span>${percent}% (${votes}표)</span>
+          </div>
+          <div class="poll-bar-bg">
+            <div class="poll-bar-fill" style="width: ${percent}%;"></div>
+          </div>
+        `;
+      }
+      container.appendChild(optDiv);
+    });
+
+    if (hasVoted) {
+      const msg = document.createElement('div');
+      msg.style.cssText = "text-align:center; margin-top:12px;";
+      msg.innerHTML = `
+        <p style="font-size:0.8rem; color:#00796B; margin:0 0 6px 0; font-weight:bold;">✓ 소중한 투표 참여 감사합니다!</p>
+        <button class="revote-btn" onclick="resetUserVote()">다시 투표하기 🔄</button>
+      `;
+      container.appendChild(msg);
+    }
+  }
+
+  function submitVote(idx) {
+    let pollData = JSON.parse(localStorage.getItem('toiletPoll_v2')) || [0, 0, 0, 0];
+    pollData[idx]++;
+    localStorage.setItem('toiletPoll_v2', JSON.stringify(pollData));
+    localStorage.setItem('toiletPollVotedIdx', idx);
+    renderPoll();
+  }
+
+  function resetUserVote() {
+    // 이전 투표수를 차감하지 않고 버튼 상태만 풀어주어 추가 투표 가능하게 처리
+    localStorage.removeItem('toiletPollVotedIdx');
+    renderPoll();
+  }
+
+  // --- 게시판 기능 ---
+  function scrollToInput() {
+    document.getElementById('write-area').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('nickname').focus();
+  }
+
+  function addPost() {
+    const categorySelect = document.getElementById('category');
+    const nicknameInput = document.getElementById('nickname');
+    const messageInput = document.getElementById('message');
+    
+    const category = categorySelect.value;
+    const nickname = nicknameInput.value.trim();
+    const message = messageInput.value.trim();
+
+    if (!nickname || !message) {
+      alert("닉네임과 내용을 모두 입력해 주세요!");
+      return;
+    }
+
+    const newPost = {
+      id: Date.now(),
+      category: category,
+      nickname: nickname,
+      message: message,
+      date: new Date().toLocaleDateString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    };
+
+    let posts = JSON.parse(localStorage.getItem('toiletPosts')) || [];
+    posts.unshift(newPost);
+    localStorage.setItem('toiletPosts', JSON.stringify(posts));
+
+    nicknameInput.value = '';
+    messageInput.value = '';
+    loadPosts();
+  }
+
+  function loadPosts() {
+    const postList = document.getElementById('post-list');
+    postList.innerHTML = '';
+    
+    let posts = JSON.parse(localStorage.getItem('toiletPosts')) || [];
+
+    if (posts.length === 0) {
+      postList.innerHTML = '<li style="text-align:center; color:#A0AEC0; padding:20px 0;">첫 번째 다짐 또는 나만의 화장실 규칙을 남겨보세요!</li>';
+      return;
+    }
+
+    posts.forEach(post => {
+      const li = document.createElement('li');
+      li.className = 'post-item';
+      li.innerHTML = `
+        <div class="post-header">
+          <div>
+            <span class="post-author">${escapeHtml(post.nickname)}</span>
+            <span class="post-category">${escapeHtml(post.category)}</span>
+          </div>
+          <span>${post.date}</span>
+        </div>
+        <div class="post-content" style="margin-top:6px;">${escapeHtml(post.message)}</div>
+      `;
+      postList.appendChild(li);
+    });
+  }
+
+  function escapeHtml(text) {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+</script>
+
+</body>
+</html>
